@@ -1,36 +1,61 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="login-container">
-    <el-form ref="formRef" :model="form" class="login-form">
+    <el-form ref="formRef" :model="form" class="login-form" :rules="rules">
       <div class="title-container">
         <h3 class="title">登录</h3>
       </div>
-      <el-form-item>
-        <!-- <el-icon :size="20" class="svg-container">
-          <Edit />
-        </el-icon> -->
+      <el-form-item prop="username">
         <svg-icon icon="user" class="svg-container"></svg-icon>
-        <el-input v-model="form.name" />
+        <el-input v-model="form.username" />
       </el-form-item>
-      <el-form-item>
-        <!-- <el-icon :size="20" class="svg-container">
-          <Edit />
-        </el-icon> -->
+      <el-form-item prop="password">
         <svg-icon icon="password" class="svg-container"></svg-icon>
-        <el-input v-model="form.password" />
+        <el-input v-model="form.password" type="password" show-password />
+        <!-- <svg-icon icon="eye" @click="changeType"></svg-icon> -->
       </el-form-item>
-      <el-button type="primary" class="login-button">登录</el-button>
+      <el-button type="primary" class="login-button" @click="handleLogin"
+        >登录</el-button
+      >
     </el-form>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-// import { Edit } from '@element-plus/icons-vue'
+import { login } from '@/api/login'
+// import { useStore } from 'vuex'
+// const store = useStore()
 const form = ref({
-  name: '',
+  username: '',
   password: ''
 })
+
+const rules = ref({
+  username: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: 'Please input Activity name', trigger: 'blur' },
+    { min: 3, max: 6, message: 'Length should be 3 to 5', trigger: 'blur' }
+  ]
+})
+
+const formRef = ref(null)
+const handleLogin = () => {
+  formRef.value.validate(async (valid) => {
+    if (valid) {
+      // const res =
+      await login(form.value)
+      // console.log(res)
+      // store.dispatch('app/login', form.value)
+    } else {
+      console.log('error submit!!')
+      return false
+    }
+  })
+}
 </script>
 
 <style lang="scss" scoped>
